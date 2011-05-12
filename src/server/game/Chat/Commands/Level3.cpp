@@ -2841,16 +2841,6 @@ bool ChatHandler::HandleServerIdleShutDownCommand(const char *args)
     return true;
 }
 
-bool ChatHandler::HandleBanAccountCommand(const char *args)
-{
-    return HandleBanHelper(BAN_ACCOUNT, args);
-}
-
-bool ChatHandler::HandleBanAccountByCharCommand(const char *args)
-{
-    return HandleBanHelper(BAN_CHARACTER, args);
-}
-
 bool ChatHandler::HandleBanCharacterCommand(const char *args)
 {
     if (!*args)
@@ -2895,84 +2885,6 @@ bool ChatHandler::HandleBanCharacterCommand(const char *args)
         }
         default:
             break;
-    }
-
-    return true;
-}
-
-bool ChatHandler::HandleBanIPCommand(const char *args)
-{
-    return HandleBanHelper(BAN_IP, args);
-}
-
-bool ChatHandler::HandleBanHelper(BanMode mode, const char *args)
-{
-    if (!*args)
-        return false;
-
-    char* cnameOrIP = strtok ((char*)args, " ");
-    if (!cnameOrIP)
-        return false;
-
-    std::string nameOrIP = cnameOrIP;
-
-    char* duration = strtok (NULL, " ");
-    if (!duration || !atoi(duration))
-        return false;
-
-    char* reason = strtok (NULL, "");
-    if (!reason)
-        return false;
-
-    switch(mode)
-    {
-        case BAN_ACCOUNT:
-            if (!AccountMgr::normalizeString(nameOrIP))
-            {
-                PSendSysMessage(LANG_ACCOUNT_NOT_EXIST, nameOrIP.c_str());
-                SetSentErrorMessage(true);
-                return false;
-            }
-            break;
-        case BAN_CHARACTER:
-            if (!normalizePlayerName(nameOrIP))
-            {
-                SendSysMessage(LANG_PLAYER_NOT_FOUND);
-                SetSentErrorMessage(true);
-                return false;
-            }
-            break;
-        case BAN_IP:
-            if (!IsIPAddress(nameOrIP.c_str()))
-                return false;
-            break;
-    }
-
-    switch(sWorld->BanAccount(mode, nameOrIP, duration, reason, m_session ? m_session->GetPlayerName() : ""))
-    {
-        case BAN_SUCCESS:
-            if (atoi(duration)>0)
-                PSendSysMessage(LANG_BAN_YOUBANNED, nameOrIP.c_str(), secsToTimeString(TimeStringToSecs(duration), true).c_str(), reason);
-            else
-                PSendSysMessage(LANG_BAN_YOUPERMBANNED, nameOrIP.c_str(), reason);
-            break;
-        case BAN_SYNTAX_ERROR:
-            return false;
-        case BAN_NOTFOUND:
-            switch(mode)
-            {
-                default:
-                    PSendSysMessage(LANG_BAN_NOTFOUND, "account", nameOrIP.c_str());
-                    break;
-                case BAN_CHARACTER:
-                    PSendSysMessage(LANG_BAN_NOTFOUND, "character", nameOrIP.c_str());
-                    break;
-                case BAN_IP:
-                    PSendSysMessage(LANG_BAN_NOTFOUND, "ip", nameOrIP.c_str());
-                    break;
-            }
-            SetSentErrorMessage(true);
-            return false;
     }
 
     return true;

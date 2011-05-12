@@ -136,7 +136,6 @@ class ChatHandler
         bool HandleGMAnnounceCommand(const char* args);
         bool HandleGMNotifyCommand(const char* args);
 
-        bool HandleBanAccountCommand(const char* args);
         bool HandleBanAccountByCharCommand(const char* args);
         bool HandleBanCharacterCommand(const char* args);
         bool HandleBanIPCommand(const char* args);

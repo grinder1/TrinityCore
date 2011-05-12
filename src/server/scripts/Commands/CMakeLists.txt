@@ -65,7 +65,7 @@ set(scripts_STAT_SRCS
 #  Commands/cs_save.cpp
 #  Commands/cs_saveall.cpp
 #  Commands/cs_kick.cpp
-#  Commands/cs_ban.cpp
+  Commands/cs_ban.cpp
 #  Commands/cs_unban.cpp
 #  Commands/cs_baninfo.cpp
 #  Commands/cs_banlist.cpp
